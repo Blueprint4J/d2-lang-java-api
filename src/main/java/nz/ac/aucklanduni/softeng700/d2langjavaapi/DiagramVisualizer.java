@@ -23,10 +23,13 @@ public class DiagramVisualizer {
      * Generates a visual, file representation of the diagram.
      */
     public void generateDiagram(ValueGraph<Component, Relationship> diagram, String outputFilename) {
+        System.out.printf("Starting diagram generation: %s\n", outputFilename);
         File d2file = exporter.export(diagram, outputFilename);
+        System.out.printf("Finished intermediary file export: %s\n", d2file.getPath());
 
         if (exporter instanceof D2FormattedExporter) {
-            D2Executor.runBuildCommand(d2file.getName(), outputFilename);
+            String outPath = D2Executor.runBuildCommand(d2file, outputFilename);
+            System.out.printf("Finished final file export: %s\n", outPath);
         }
     }
 }

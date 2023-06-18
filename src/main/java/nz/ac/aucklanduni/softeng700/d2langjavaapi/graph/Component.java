@@ -17,9 +17,9 @@ public class Component {
 
     public String getLabel() {
         if (compositionParent != null) {
-            return compositionParent + "." + label;
+            return String.format("%s.\"%s\"", compositionParent, label);
         }
-        return label;
+        return String.format("\"%s\"", label);
     }
 
     @Override
