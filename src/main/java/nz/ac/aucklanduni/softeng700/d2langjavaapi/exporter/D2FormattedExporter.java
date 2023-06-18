@@ -8,6 +8,7 @@ import com.google.common.graph.ValueGraph;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -20,6 +21,8 @@ public class D2FormattedExporter implements FormattedExporter {
     public File export(ValueGraph<Component, Relationship> graph, String filename) {
         convertToNestedSyntaxGraph(graph);
 
+        Map<Component, Component> twoWayRelationships = new HashMap<>();
+
         try {
             new File("temp").mkdir();
             File file = new File("temp", filename + ".d2");
@@ -30,14 +33,30 @@ public class D2FormattedExporter implements FormattedExporter {
 
             // Write nodes (composition relations are embedded inside)
             for (Component node : graph.nodes()) {
-                writer.append(node.getLabel()).append("\n");
+                writer.append(String.format("%s\n", node.getLabel()));
             }
 
             // Write dependency edges
             for (var edge : graph.edges()) {
                 Relationship relationship = graph.edgeValue(edge).get();
                 if (relationship.type() == Relationship.EdgeType.DEPENDENCY) {
-                    writer.append(String.format("%s -> %s\n", edge.source().getLabel(), edge.target().getLabel()));
+
+                    // Check if dependency is two-way
+                    boolean twoWay = graph.edgeValue(edge.target(), edge.source())
+                            .map(Relationship::type)
+                            .filter(it -> it.equals(Relationship.EdgeType.DEPENDENCY))
+                            .isPresent();
+
+                    if (twoWay && twoWayRelationships.get(edge.source()) == edge.target()) {
+                        continue;
+                    } else if (twoWay) {
+                        twoWayRelationships.put(edge.target(), edge.source());
+                    }
+
+                    writer.append(String.format("%s %s %s\n",
+                                                edge.source().getLabel(),
+                                                twoWay ? "<->" : "->",
+                                                edge.target().getLabel()));
                 }
             }
 
