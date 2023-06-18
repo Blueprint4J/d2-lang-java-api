@@ -1,4 +1,4 @@
-package nz.ac.aucklanduni.softeng700.d2langjavaapi.visualization;
+package nz.ac.aucklanduni.softeng700.d2langjavaapi.exporter;
 
 import com.google.common.graph.Graphs;
 import com.google.common.graph.MutableValueGraph;
@@ -18,16 +18,22 @@ import nz.ac.aucklanduni.softeng700.d2langjavaapi.graph.Component;
 
 public class D2FormattedExporter implements FormattedExporter {
     public File export(ValueGraph<Component, Relationship> graph, String filename) {
-        File file = new File(filename + ".d2");
-
         convertToNestedSyntaxGraph(graph);
 
         try {
+            new File("temp").mkdir();
+            File file = new File("temp", filename + ".d2");
+
             FileWriter writer = new FileWriter(file);
+
+            writer.append("direction: down\n");
+
+            // Write nodes (composition relations are embedded inside)
             for (Component node : graph.nodes()) {
                 writer.append(node.getLabel()).append("\n");
             }
 
+            // Write dependency edges
             for (var edge : graph.edges()) {
                 Relationship relationship = graph.edgeValue(edge).get();
                 if (relationship.type() == Relationship.EdgeType.DEPENDENCY) {
@@ -36,11 +42,13 @@ public class D2FormattedExporter implements FormattedExporter {
             }
 
             writer.close();
+
+            return file;
         } catch (IOException e) {
             e.printStackTrace();
-        }
 
-        return file;
+            throw new RuntimeException("Could not create export file");
+        }
     }
 
     private static Optional<Component> getParent(ValueGraph<Component, Relationship> graph, Component component) {
@@ -59,15 +67,10 @@ public class D2FormattedExporter implements FormattedExporter {
                 .filter(it -> compositionTree.inDegree(it) == 0)
                 .collect(Collectors.toSet());
 
-        Map<Integer, Component> graphNodes = graph.nodes().stream().collect(Collectors.toMap(Component::hashCode, it -> it));
         Traverser.forTree(compositionTree).breadthFirst(rootCompositionComponents)
                 .forEach(it -> {
                     Optional<Component> parent = getParent(compositionTree, it);
-                    if (parent.isPresent()) {
-                        it.setCompositionParent(parent.get().getLabel());
-                        graphNodes.get(it.hashCode()).setCompositionParent(parent.get().getLabel());
-                        System.out.println(it.getLabel());
-                    }
+                    parent.ifPresent(component -> it.setCompositionParent(component.getLabel()));
                 });
     }
 }

@@ -1,4 +1,4 @@
-package nz.ac.aucklanduni.softeng700.d2langjavaapi.driver;
+package nz.ac.aucklanduni.softeng700.d2langjavaapi;
 
 import com.google.common.graph.MutableValueGraph;
 import com.google.common.graph.ValueGraph;
@@ -6,33 +6,28 @@ import com.google.common.graph.ValueGraphBuilder;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import nz.ac.aucklanduni.softeng700.d2langjavaapi.driver.D2Executor;
 import nz.ac.aucklanduni.softeng700.d2langjavaapi.graph.Component;
 import nz.ac.aucklanduni.softeng700.d2langjavaapi.graph.Relationship;
-import nz.ac.aucklanduni.softeng700.d2langjavaapi.visualization.D2FormattedExporter;
-import nz.ac.aucklanduni.softeng700.d2langjavaapi.visualization.FormattedExporter;
+import nz.ac.aucklanduni.softeng700.d2langjavaapi.exporter.D2FormattedExporter;
 
-public class GraphTest {
-
-    @Test
-    public void test_A1Graph_Grouping() {
-        var graph = buildExampleA1Graph();
-        FormattedExporter exporter = new D2FormattedExporter();
-        File d2file = exporter.export(graph, "example_a1_graph");
-        D2Executor.runBuildCommand(d2file.getName());
-    }
+public class DiagramVisualizerTest {
 
     @Test
     public void test_A1Graph_NoGrouping() {
+        var graph = buildExampleA1Graph();
+        DiagramVisualizer visualizer = new DiagramVisualizer(new D2FormattedExporter());
+        visualizer.generateDiagram(graph, "example_a1_graph");
+    }
+
+    @Test
+    public void test_A1Graph_Grouping() {
         var graph = buildExampleA1GraphComposed();
-        FormattedExporter exporter = new D2FormattedExporter();
-        File d2file = exporter.export(graph, "example_a1_graph_clustered");
-        D2Executor.runBuildCommand(d2file.getName());
+        DiagramVisualizer visualizer = new DiagramVisualizer(new D2FormattedExporter());
+        visualizer.generateDiagram(graph, "example_a1_graph_clustered");
     }
 
     // Build baseline
