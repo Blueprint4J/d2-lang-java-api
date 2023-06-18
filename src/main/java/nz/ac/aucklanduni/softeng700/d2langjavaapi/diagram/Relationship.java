@@ -1,4 +1,4 @@
-package nz.ac.aucklanduni.softeng700.d2langjavaapi.graph;
+package nz.ac.aucklanduni.softeng700.d2langjavaapi.diagram;
 
 /**
  * Represents a relationship between two components of our diagram.

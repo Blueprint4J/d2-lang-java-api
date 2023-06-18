@@ -10,8 +10,9 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import nz.ac.aucklanduni.softeng700.d2langjavaapi.graph.Component;
-import nz.ac.aucklanduni.softeng700.d2langjavaapi.graph.Relationship;
+import nz.ac.aucklanduni.softeng700.d2langjavaapi.diagram.Component;
+import nz.ac.aucklanduni.softeng700.d2langjavaapi.diagram.Metadata;
+import nz.ac.aucklanduni.softeng700.d2langjavaapi.diagram.Relationship;
 import nz.ac.aucklanduni.softeng700.d2langjavaapi.exporter.D2FormattedExporter;
 
 public class DiagramVisualizerTest {
@@ -20,14 +21,18 @@ public class DiagramVisualizerTest {
     public void test_A1Graph_NoGrouping() {
         var graph = buildExampleA1Graph();
         DiagramVisualizer visualizer = new DiagramVisualizer(new D2FormattedExporter());
-        visualizer.generateDiagram(graph, "example_a1_graph");
+        visualizer.generateDiagram(generateMetadata(), graph, "example_a1_graph");
     }
 
     @Test
     public void test_A1Graph_Grouping() {
         var graph = buildExampleA1GraphComposed();
         DiagramVisualizer visualizer = new DiagramVisualizer(new D2FormattedExporter());
-        visualizer.generateDiagram(graph, "example_a1_graph_clustered");
+        visualizer.generateDiagram(generateMetadata(), graph, "example_a1_graph_clustered");
+    }
+
+    private static Metadata generateMetadata() {
+        return new Metadata("Component dependency diagram");
     }
 
     // Build baseline

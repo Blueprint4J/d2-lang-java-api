@@ -4,10 +4,11 @@ import com.google.common.graph.ValueGraph;
 
 import java.io.File;
 
+import nz.ac.aucklanduni.softeng700.d2langjavaapi.diagram.Metadata;
 import nz.ac.aucklanduni.softeng700.d2langjavaapi.driver.D2Executor;
 import nz.ac.aucklanduni.softeng700.d2langjavaapi.exporter.D2FormattedExporter;
-import nz.ac.aucklanduni.softeng700.d2langjavaapi.graph.Component;
-import nz.ac.aucklanduni.softeng700.d2langjavaapi.graph.Relationship;
+import nz.ac.aucklanduni.softeng700.d2langjavaapi.diagram.Component;
+import nz.ac.aucklanduni.softeng700.d2langjavaapi.diagram.Relationship;
 import nz.ac.aucklanduni.softeng700.d2langjavaapi.exporter.FormattedExporter;
 
 public class DiagramVisualizer {
@@ -22,9 +23,9 @@ public class DiagramVisualizer {
     /**
      * Generates a visual, file representation of the diagram.
      */
-    public void generateDiagram(ValueGraph<Component, Relationship> diagram, String outputFilename) {
+    public void generateDiagram(Metadata data, ValueGraph<Component, Relationship> diagram, String outputFilename) {
         System.out.printf("Starting diagram generation: %s\n", outputFilename);
-        File d2file = exporter.export(diagram, outputFilename);
+        File d2file = exporter.export(data, diagram, outputFilename);
         System.out.printf("Finished intermediary file export: %s\n", d2file.getPath());
 
         if (exporter instanceof D2FormattedExporter) {
