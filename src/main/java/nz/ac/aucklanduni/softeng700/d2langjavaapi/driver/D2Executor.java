@@ -8,12 +8,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import nz.ac.aucklanduni.softeng700.d2langjavaapi.diagram.style.ColourTheme;
+import nz.ac.aucklanduni.softeng700.d2langjavaapi.diagram.style.LayoutEngine;
+
 public class D2Executor {
 
     private static final String EXPORT_DIRECTORY = "export";
 
+    private LayoutEngine layoutEngine = LayoutEngine.DAGRE;
+    private ColourTheme theme = ColourTheme.COLOURBLIND_CLEAR;
+
     public D2Executor() {
         setupD2Lib();
+    }
+
+    public void setLayoutEngine(LayoutEngine layoutEngine) {
+        this.layoutEngine = layoutEngine;
+    }
+
+    public void setTheme(ColourTheme theme) {
+        this.theme = theme;
     }
 
     public String runBuildCommand(File d2File, String outputFileName) throws RuntimeException {
@@ -25,8 +39,8 @@ public class D2Executor {
                                                d2File.getPath(),
                                                EXPORT_DIRECTORY + "/" + imageFileName);
 
-        pb.environment().put("D2_THEME", "4");
-        pb.environment().put("D2_LAYOUT", "dagre");
+        pb.environment().put("D2_THEME", theme.getSelector());
+        pb.environment().put("D2_LAYOUT", layoutEngine.getSelector());
 
         try {
             Process process = pb.start();
