@@ -29,8 +29,16 @@ public class DiagramVisualizer {
         System.out.printf("Finished intermediary file export: %s\n", d2file.getPath());
 
         if (exporter instanceof D2FormattedExporter) {
-            String outPath = D2Executor.runBuildCommand(d2file, outputFilename);
+            String outPath = (new D2Executor()).runBuildCommand(d2file, outputFilename);
             System.out.printf("Finished final file export: %s\n", outPath);
         }
+    }
+
+    public static void main(String[] args) {
+        new DiagramVisualizer(new D2FormattedExporter()).run();
+    }
+
+    public void run() {
+        System.out.println(getClass().getResourceAsStream("d2"));
     }
 }

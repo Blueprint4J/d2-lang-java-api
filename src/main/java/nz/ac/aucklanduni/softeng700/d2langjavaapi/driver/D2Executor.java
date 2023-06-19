@@ -1,17 +1,23 @@
 package nz.ac.aucklanduni.softeng700.d2langjavaapi.driver;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class D2Executor {
 
     private static final String EXPORT_DIRECTORY = "export";
 
-    public static String runBuildCommand(File d2File, String outputFileName) throws RuntimeException {
+    public String runBuildCommand(File d2File, String outputFileName) throws RuntimeException {
         String fileType = "png";  // Can also be jpg or svg
         String imageFileName = outputFileName + "." + fileType;
 
-        ProcessBuilder pb = new ProcessBuilder("d2",
+        String executablePath = setupD2Lib();
+        ProcessBuilder pb = new ProcessBuilder(executablePath,
                                                d2File.getPath(),
                                                EXPORT_DIRECTORY + "/" + imageFileName);
 
@@ -30,5 +36,21 @@ public class D2Executor {
         }
 
         return EXPORT_DIRECTORY + "/" + imageFileName;
+    }
+
+    private String setupD2Lib() {
+        try {
+            File file = new File("./lib/d2");
+            if (!file.exists()) {
+                new File("lib").mkdir();
+                InputStream binIn = getClass().getResourceAsStream("d2");
+                OutputStream binOut = new FileOutputStream("lib/d2");
+                IOUtils.copy(binIn, binOut);
+            }
+
+            return file.getPath();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not make copy of D2 binary!");
+        }
     }
 }
