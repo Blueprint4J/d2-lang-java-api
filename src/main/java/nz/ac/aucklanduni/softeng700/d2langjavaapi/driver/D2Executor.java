@@ -12,6 +12,10 @@ public class D2Executor {
 
     private static final String EXPORT_DIRECTORY = "export";
 
+    public D2Executor() {
+        setupD2Lib();
+    }
+
     public String runBuildCommand(File d2File, String outputFileName) throws RuntimeException {
         String fileType = "png";  // Can also be jpg or svg
         String imageFileName = outputFileName + "." + fileType;
@@ -40,11 +44,12 @@ public class D2Executor {
 
     private String setupD2Lib() {
         try {
-            File file = new File("./lib/d2");
+            File file = new File("./temp/d2-blueprint4j-lib");
+            file.setExecutable(true);
             if (!file.exists()) {
-                new File("lib").mkdir();
-                InputStream binIn = getClass().getResourceAsStream("d2");
-                OutputStream binOut = new FileOutputStream("lib/d2");
+                new File("temp").mkdir();
+                InputStream binIn = getClass().getResourceAsStream("/d2-blueprint4j-lib");
+                OutputStream binOut = new FileOutputStream(file);
                 IOUtils.copy(binIn, binOut);
             }
 

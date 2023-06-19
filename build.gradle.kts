@@ -5,17 +5,6 @@ plugins {
 group = "nz.ac.aucklanduni.softeng700.d2-lang"
 version = "1.0-SNAPSHOT"
 
-sourceSets {
-    main {
-        java {
-            srcDir("src/main/java")
-        }
-        resources {
-            srcDir("src/main/resources")
-        }
-    }
-}
-
 repositories {
     mavenCentral()
 }
@@ -34,4 +23,3 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
-
