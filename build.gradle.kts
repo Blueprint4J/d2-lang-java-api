@@ -2,7 +2,7 @@ plugins {
     `java-library`
 }
 
-group = "nz.ac.aucklanduni.softeng700.d2-lang"
+group = "nz.ac.aucklanduni.softeng700.d2-lang-java-api"
 version = "1.0-SNAPSHOT"
 
 repositories {
