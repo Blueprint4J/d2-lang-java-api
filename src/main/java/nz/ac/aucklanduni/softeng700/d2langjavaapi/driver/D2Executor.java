@@ -61,8 +61,7 @@ public class D2Executor {
             String localOSArch = System.getProperty("os.arch");
             String tempFilepath = "./temp/";
             String binaryFilename = "";
-
-            System.out.println(localOSArch);
+            
             // TODO: Add support for more OS
             if (localOSArch.equals("aarch64")) {
                 binaryFilename = "d2-blueprint4j-lib-arm64";
@@ -75,13 +74,11 @@ public class D2Executor {
                 tempFilepath = tempFilepath.concat(binaryFilename);
             }
 
-            System.out.println(binaryFilename);
-
             File file = new File(tempFilepath);
             file.setExecutable(true);
             if (!file.exists()) {
                 new File("temp").mkdir();
-                InputStream binIn = getClass().getResourceAsStream(binaryFilename);
+                InputStream binIn = getClass().getClassLoader().getResourceAsStream(binaryFilename);
                 OutputStream binOut = new FileOutputStream(file);
                 IOUtils.copy(binIn, binOut);
             }
