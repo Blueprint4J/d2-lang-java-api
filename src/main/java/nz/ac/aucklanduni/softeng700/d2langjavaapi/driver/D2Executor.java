@@ -58,17 +58,37 @@ public class D2Executor {
 
     private String setupD2Lib() {
         try {
-            File file = new File("./temp/d2-blueprint4j-lib");
+            String localOSArch = System.getProperty("os.arch");
+            String tempFilepath = "./temp/";
+            String binaryFilename = "";
+
+            System.out.println(localOSArch);
+            // TODO: Add support for more OS
+            if (localOSArch.equals("aarch64")) {
+                binaryFilename = "d2-blueprint4j-lib-arm64";
+                tempFilepath = tempFilepath.concat(binaryFilename);
+            } else if (localOSArch.equals("x86_64")) {
+                binaryFilename = "d2-blueprint4j-lib-amd64";
+                tempFilepath = tempFilepath.concat(binaryFilename);
+            } else {
+                binaryFilename = "d2-blueprint4j-lib-amd64";
+                tempFilepath = tempFilepath.concat(binaryFilename);
+            }
+
+            System.out.println(binaryFilename);
+
+            File file = new File(tempFilepath);
             file.setExecutable(true);
             if (!file.exists()) {
                 new File("temp").mkdir();
-                InputStream binIn = getClass().getResourceAsStream("/d2-blueprint4j-lib");
+                InputStream binIn = getClass().getResourceAsStream(binaryFilename);
                 OutputStream binOut = new FileOutputStream(file);
                 IOUtils.copy(binIn, binOut);
             }
 
             return file.getPath();
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException("Could not make copy of D2 binary!");
         }
     }
