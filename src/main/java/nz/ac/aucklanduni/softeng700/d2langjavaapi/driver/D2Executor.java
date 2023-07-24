@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import nz.ac.aucklanduni.softeng700.d2langjavaapi.diagram.style.ColourTheme;
 import nz.ac.aucklanduni.softeng700.d2langjavaapi.diagram.style.LayoutEngine;
@@ -17,6 +19,12 @@ public class D2Executor {
 
     private LayoutEngine layoutEngine = LayoutEngine.DAGRE;
     private ColourTheme theme = ColourTheme.COLOURBLIND_CLEAR;
+
+    // TODO: Add more supported architectures w/ accompanying binaries
+    private final Map<String, String> osToBinaryMappings = Map.of(
+            "aarch64", "d2-blueprint4j-lib-arm64",
+            "x86_64", "d2-blueprint4j-lib-amd64"
+    );
 
     public D2Executor() {
         setupD2Lib();
@@ -57,24 +65,15 @@ public class D2Executor {
     }
 
     private String setupD2Lib() {
-        try {
-            String localOSArch = System.getProperty("os.arch");
-            String tempFilepath = "./temp/";
-            String binaryFilename = "";
-            
-            // TODO: Add support for more OS
-            if (localOSArch.equals("aarch64")) {
-                binaryFilename = "d2-blueprint4j-lib-arm64";
-                tempFilepath = tempFilepath.concat(binaryFilename);
-            } else if (localOSArch.equals("x86_64")) {
-                binaryFilename = "d2-blueprint4j-lib-amd64";
-                tempFilepath = tempFilepath.concat(binaryFilename);
-            } else {
-                binaryFilename = "d2-blueprint4j-lib-amd64";
-                tempFilepath = tempFilepath.concat(binaryFilename);
-            }
+        // Determine the right D2 binary by system architecture
+        String localOSArch = System.getProperty("os.arch");
+        String binaryFilename = osToBinaryMappings.get(localOSArch);
+        if (binaryFilename == null) {
+            throw new RuntimeException("Unsupported runtime architecture for D2: " + localOSArch);
+        }
 
-            File file = new File(tempFilepath);
+        try {
+            File file = new File("./temp/" + binaryFilename);
             file.setExecutable(true);
             if (!file.exists()) {
                 new File("temp").mkdir();
