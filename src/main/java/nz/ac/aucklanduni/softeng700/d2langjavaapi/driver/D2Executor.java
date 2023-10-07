@@ -39,7 +39,7 @@ public class D2Executor {
     }
 
     public String runBuildCommand(File d2File, String outputFileName) throws RuntimeException {
-        String fileType = "png";  // Can also be jpg or svg
+        String fileType = "svg";  // Can also be jpg or svg
         String imageFileName = outputFileName + "." + fileType;
 
         String executablePath = setupD2Lib();
