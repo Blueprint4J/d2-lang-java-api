@@ -22,9 +22,9 @@ public class DiagramVisualizer {
     }
 
     /**
-     * Generates a visual, file representation of the diagram.
+     * Generates a visual, file representation of the diagram and returns the path to it.
      */
-    public void generateDiagram(Metadata data, ValueGraph<Component, Relationship> diagram, String outputFilename) {
+    public String generateDiagram(Metadata data, ValueGraph<Component, Relationship> diagram, String outputFilename) {
         System.out.printf("Starting diagram generation: %s\n", outputFilename);
         File d2file = exporter.export(data, diagram, outputFilename);
         System.out.printf("Finished intermediary file export: %s\n", d2file.getPath());
@@ -32,6 +32,10 @@ public class DiagramVisualizer {
         if (exporter instanceof D2FormattedExporter) {
             String outPath = executor.runBuildCommand(d2file, outputFilename);
             System.out.printf("Finished final file export: %s\n", outPath);
+
+            return outPath;
+        } else {
+            throw new UnsupportedOperationException(exporter.getClass().getName() + " not supported!");
         }
     }
 
