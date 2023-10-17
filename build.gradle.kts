@@ -9,6 +9,11 @@ repositories {
     mavenCentral()
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 dependencies {
     // Guava - Google collection of random utilities - mainly used for graph DSA's (https://github.com/google/guava)
     implementation("com.google.guava:guava:32.0.0-jre")
